@@ -10,6 +10,7 @@ class Helix(object):
         self.aminoAcidDict = {"ALA": "A", "GLY": "G", "PHE": "F", "ILE": "I", "MET": "M", "LEU": "L", "PRO": "P", "VAL": "V",
                          "ASP": "D", "GLU": "E", "LYS": "K", "ARG": "R", "SER": "S", "THR": "T", "TYR": "Y", "HIS": "H",
                          "CYS": "C", "ASN": "N", "GLN": "Q", "TRP": "W", "MSE": "M"}
+
         self.start_point = helix_residues[0]['N'].get_coord()
         self.end_point = helix_residues[-1]['N'].get_coord()
         self.length = helix_residues[-1]['N'] - helix_residues[0]['N']

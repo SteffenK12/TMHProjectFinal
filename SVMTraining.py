@@ -75,7 +75,7 @@ tm_set = []
 glob_set = []
 
 # Parse PDB files and extract helices
-structureCounter = SecondaryStructureCounter("globular_set")
+structureCounter = SecondaryStructureCounter("globular_set2")
 structureCounter.parse_all_pdb_files()
 
 new_helices = structureCounter.proteinHelixSequences
@@ -103,26 +103,26 @@ print("Accuracy: " + str(np.mean(cross_validation.cross_val_score(clf, X=trainin
 
 
 # # Make plot
-# nf_tm = open("tm_file.txt", "w")
-# nf_glob = open("glob_file.txt", "w")
-# x1 = []
-# y1 = []
-# x2 = []
-# y2 = []
-# for elem in tm_set:
-#     tmp = calculate_features(elem)
-#     x1.append(tmp[0])
-#     y1.append(tmp[1])
-#     nf_tm.write(str(tmp[0]) + "\t" + str(tmp[1]) + "\n")
-#
-# for elem in glob_set:
-#     tmp = calculate_features(elem)
-#     x2.append(tmp[0])
-#     y2.append(tmp[1])
-#     nf_glob.write(str(tmp[0]) + "\t" + str(tmp[1]) + "\n")
-#
-# nf_tm.close()
-# nf_glob.close()
+nf_tm = open("tm_file.txt", "w")
+nf_glob = open("glob_file.txt", "w")
+x1 = []
+y1 = []
+x2 = []
+y2 = []
+for elem in tm_set:
+    tmp = calculate_features(elem)
+    x1.append(tmp[0])
+    y1.append(tmp[1])
+    nf_tm.write(str(tmp[0]) + "\t" + str(tmp[1]) + "\n")
+
+for elem in glob_set:
+    tmp = calculate_features(elem)
+    x2.append(tmp[0])
+    y2.append(tmp[1])
+    nf_glob.write(str(tmp[0]) + "\t" + str(tmp[1]) + "\n")
+
+nf_tm.close()
+nf_glob.close()
 # fig = plt.figure()
 # tm_array = np.array([y1, x1])
 # glob_array = np.array([y2, x2])
@@ -140,6 +140,6 @@ print("Accuracy: " + str(np.mean(cross_validation.cross_val_score(clf, X=trainin
 # plt.show()
 
 # Save the model
-joblib.dump(clf, "tmh_predictor_weighted.pkl")
+joblib.dump(clf, "tmh_predictor_final.pkl")
 
 

@@ -18,21 +18,20 @@ def isTransmembraneProtein(file):
     pdbParser = PDBHelixParser(file)
     pdbParser.parse_pdb_file()
     structure = pdbParser.structure         # The whole structure of the PDB file
-    print("Parsed PDB file succesfully")
     raw_helices = pdbParser.proteinHelixSequences
 
     # Convert raw helices into Helix objects
     helix_set = []
     for h in raw_helices:
         helix_set.append(Helix(h))
-    print("Found " + str(len(helix_set)) + " helices")
-
+    print("Found " + str(len(helix_set)))
     # Predict transmembrane helices
     tmh_set = []
     for h in helix_set:
         if is_transmembrane_helix(h) == 'tm':
             tmh_set.append(h)
-    print(len(tmh_set) / len(helix_set))
+    print(len(tmh_set))
+    #print(len(tmh_set) / len(helix_set))
     if len(tmh_set) < 3 or len(tmh_set)/len(helix_set) < 0.1:
         return False
     else:
@@ -40,9 +39,25 @@ def isTransmembraneProtein(file):
 
 
 if __name__ == "__main__":
+    tp = 0
+    tn = 0
+    fp = 0
+    fn = 0
 
     tm = 0
     glob = 0
+    test = []
+    directory = "validation_set_glob"
+    for subdir, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(".pdb"):
+                f = directory + "/" + file
+                if isTransmembraneProtein(f):
+                    tm += 1
+                    fp += 1
+                else:
+                    tn += 1
+                    glob += 1
 
     directory = "validation_set_tm"
     for subdir, dirs, files in os.walk(directory):
@@ -51,8 +66,16 @@ if __name__ == "__main__":
                 f = directory + "/" + file
                 if isTransmembraneProtein(f):
                     tm += 1
+                    tp += 1
                 else:
+                    fn += 1
                     glob += 1
 
     print("Tramsmembrane: " + str(tm))
     print("Globular: " + str(glob))
+    sensitvity = tp /(tp + fn)
+    print("Sensitivity: " + str(sensitvity))
+    specificity = tn / (tn + fp)
+    print("Specificity: " + str(specificity))
+    accuray = (tp + tn) / (tp + tn + fp + fn)
+    print("Accuracy: " + str(accuray))

@@ -27,7 +27,7 @@ as two planes: one for each ende of the membrane
 if __name__== "__main__":
     # parser = argparse.ArgumentParser(description="Membrane Plane Finder")
     # parser.add_argument('pdb')
-    file="test/5id3.pdb"
+    file="test/1bm1.pdb"
     pdbParser = PDBHelixParser(file)
     pdbParser.parse_pdb_file()
     structure = pdbParser.structure         # The whole structure of the PDB file
@@ -37,7 +37,8 @@ if __name__== "__main__":
     # Convert raw helices into Helix objects
     helix_set = []
     for h in raw_helices:
-        helix_set.append(Helix(h))
+        if len(h) > 0:
+            helix_set.append(Helix(h))
     print("Found " + str(len(helix_set)) + " helices")
 
     # Predict transmembrane helices
@@ -74,14 +75,20 @@ if __name__== "__main__":
               colors=colorConverter.to_rgb('g'), lw=8, length=50, pivot='tail')
     d1 = -lower_membrane.dot(normal)
     d2 = -upper_membrane.dot(normal)
-    xx1, yy1 = np.meshgrid(range(100), range(100))
-    xx2, yy2 = np.meshgrid(range(100), range(100))
+    xx1, yy1 = np.meshgrid(range(-100, 100), range(-100, 100))
+    xx2, yy2 = np.meshgrid(range(-100, 100), range(-100, 100))
     z1 = (-normal[0] * xx1 - normal[1] * yy1 - d1) * 1. / normal[2]
     z2 = (-normal[0] * xx2 - normal[1] * yy2 - d2) * 1. / normal[2]
-    ax.plot_surface(xx1, yy1, z1, color="blue", lw=4, )
-    ax.plot_surface(xx2, yy2, z2, color="red", lw=4)
+    ax.plot_surface(xx1, yy1, z1, color="blue", lw=4, alpha=.2)
+    ax.plot_surface(xx2, yy2, z2, color="red", lw=4, alpha=.2)
     ax.set_xlim(-100, 100)
     ax.set_ylim(-100, 100)
     ax.set_zlim(-100, 100)
+
+    # Include atoms (bad performance)
+    # for res in structure.get_residues():
+    #     if res.has_id('N'):
+    #         coord = res['N'].get_coord()
+    #         ax.scatter(coord[0], coord[1], coord[2], color="yellow")
 
     plt.show()
