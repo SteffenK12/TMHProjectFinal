@@ -1,3 +1,4 @@
+import os
 import sys
 
 from Helix import Helix
@@ -9,6 +10,7 @@ __date__ = '08.06.2016'
 """
 Validation of the model
 """
+
 
 def isTransmembraneProtein(file):
     # parser = argparse.ArgumentParser(description="Membrane Plane Finder")
@@ -33,7 +35,24 @@ def isTransmembraneProtein(file):
     print(len(tmh_set) / len(helix_set))
     if len(tmh_set) < 3 or len(tmh_set)/len(helix_set) < 0.1:
         return False
-        print("False")
     else:
         return True
-        print("True")
+
+
+if __name__ == "__main__":
+
+    tm = 0
+    glob = 0
+
+    directory = "validation_set_tm"
+    for subdir, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(".pdb"):
+                f = directory + "/" + file
+                if isTransmembraneProtein(f):
+                    tm += 1
+                else:
+                    glob += 1
+
+    print("Tramsmembrane: " + str(tm))
+    print("Globular: " + str(glob))
