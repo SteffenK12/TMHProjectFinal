@@ -27,7 +27,7 @@ as two planes: one for each ende of the membrane
 if __name__== "__main__":
     # parser = argparse.ArgumentParser(description="Membrane Plane Finder")
     # parser.add_argument('pdb')
-    file="test/1be3.pdb"
+    file="test/5id3.pdb"
     pdbParser = PDBHelixParser(file)
     pdbParser.parse_pdb_file()
     structure = pdbParser.structure         # The whole structure of the PDB file
@@ -45,18 +45,25 @@ if __name__== "__main__":
     for h in helix_set:
         if is_transmembrane_helix(h) == 'tm':
             tmh_set.append(h)
+    print(len(tmh_set) / len(helix_set))
+    if len(tmh_set) < 3 or len(tmh_set)/len(helix_set) < 0.1:
+        print("No transmembrane protein!")
+        sys.exit(0)
+    else:
+        print("Transmembrane protein")
 
     print("Predicted transmembrane helices: " + str(len(tmh_set)))
 
     # Calculate the normal vector of the transmembrane plane
     normal = calculate_normal_vector(tmh_set)
+    print("Membrane normal vector: " + str(normal))
 
     # Choose the helix closest to the normal for width of the membrane
     # Create a plot
     placer=MembranePlacer(tmh_set,structure,normal,file)
     membranes=placer.placeMembrane()
-    lower_membrane = membranes[0][0]
-    upper_membrane = membranes[0][1]
+    lower_membrane = membranes[0]
+    upper_membrane = membranes[1]
 
     fig = plt.figure()
     ax = fig.gca(projection='3d')
@@ -71,14 +78,10 @@ if __name__== "__main__":
     xx2, yy2 = np.meshgrid(range(100), range(100))
     z1 = (-normal[0] * xx1 - normal[1] * yy1 - d1) * 1. / normal[2]
     z2 = (-normal[0] * xx2 - normal[1] * yy2 - d2) * 1. / normal[2]
-    if membranes[1]==0:
-        ax.plot_surface(xx1, yy1, z1, color="red",lw=4, )
-        ax.plot_surface(xx2, yy2, z2, color="blue", lw=4)
-    else:
-        ax.plot_surface(xx1, yy1, z1, color="blue", lw=4, )
-        ax.plot_surface(xx2, yy2, z2, color="red", lw=4)
-    ax.set_xlim(-50, 50)
-    ax.set_ylim(-50, 50)
-    ax.set_zlim(-50, 50)
+    ax.plot_surface(xx1, yy1, z1, color="blue", lw=4, )
+    ax.plot_surface(xx2, yy2, z2, color="red", lw=4)
+    ax.set_xlim(-100, 100)
+    ax.set_ylim(-100, 100)
+    ax.set_zlim(-100, 100)
 
     plt.show()
