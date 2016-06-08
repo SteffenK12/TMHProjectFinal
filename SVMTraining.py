@@ -1,3 +1,6 @@
+from Helix import Helix
+from ModuleMethods import is_transmembrane_helix
+from PDBHelixParser import PDBHelixParser
 from PDBextractor import SecondaryStructureCounter
 
 __author__ = "Kevin Menden"
@@ -28,10 +31,6 @@ def calculate_hydrophobicity(seq):
         if elem in hydrophobic_residues:
             phobic += 1
 
-    # if len(seq) > 0:
-    #
-    #     return phobic/len(seq)
-    # else: return 0
     return phobic
 
 
@@ -95,46 +94,45 @@ for i in range(2500):
 training, class_labels = make_training_set(tm_set, glob_set)
 
 # Training
-clf = svm.SVC(kernel='rbf')
+clf = svm.SVC(kernel='rbf', class_weight={"glob": 10})
 clf.fit(X=training, y=class_labels)
 
 # Cross-validation
+scores = cross_validation.cross_val_score(clf, X=training, y=class_labels)
 print("Accuracy: " + str(np.mean(cross_validation.cross_val_score(clf, X=training, y=class_labels))))
 
 
-# Make plot
-x1 = []
-y1 = []
-x2 = []
-y2 = []
-for elem in tm_set:
-    tmp = calculate_features(elem)
-    x1.append(tmp[0])
-    y1.append(tmp[1])
+# # Make plot
+# nf_tm = open("tm_file.txt", "w")
+# nf_glob = open("glob_file.txt", "w")
+# x1 = []
+# y1 = []
+# x2 = []
+# y2 = []
+# for elem in tm_set:
+#     tmp = calculate_features(elem)
+#     x1.append(tmp[0])
+#     y1.append(tmp[1])
+#     nf_tm.write(str(tmp[0]) + "\t" + str(tmp[1]) + "\n")
+#
+# for elem in glob_set:
+#     tmp = calculate_features(elem)
+#     x2.append(tmp[0])
+#     y2.append(tmp[1])
+#     nf_glob.write(str(tmp[0]) + "\t" + str(tmp[1]) + "\n")
+#
+# nf_tm.close()
+# nf_glob.close()
+# fig = plt.figure()
+# tm_array = np.array([y1, x1])
+# glob_array = np.array([y2, x2])
+# max_length = max(max(y1), max(y2))
+# H, xedges, yedges = np.histogram2d(tm_array[0], tm_array[1], bins=range(max_length))
+# plt.pcolor(xedges, yedges, H, cmap="Blues")
+#
+# # ax2.colorbar()
+# plt.show()
 
-for elem in glob_set:
-    tmp = calculate_features(elem)
-    x2.append(tmp[0])
-    y2.append(tmp[1])
-
-fig = plt.figure()
-
-x1 = np.array(x1)
-y1 = np.array(y1)
-ax1 = fig.add_subplot(211)
-ax1.hexbin(x1, y1, gridsize=100, bins=None, cmap=cm.jet)
-# plt.hexbin(x1, y1, gridsize=100, bins=None, cmap=cm.jet)
-ax1.axis([x1.min(), x1.max(), y1.min(), y1.max()])
-# ax1.colorbar()
-
-ax2 = fig.add_subplot(212)
-x2 = np.array(x2)
-y2 = np.array(y2)
-ax2.hexbin(x2, y2, gridsize=50, bins=None, cmap=cm.jet)
-ax2.axis([x1.min(), x1.max(), y1.min(), y1.max()])
-
-# ax2.colorbar()
-plt.show()
 
 
 # plt.xlabel("Hydrophobicity factor")
@@ -142,6 +140,6 @@ plt.show()
 # plt.show()
 
 # Save the model
-# joblib.dump(clf, "tmh_predictor.pkl")
+joblib.dump(clf, "tmh_predictor_weighted.pkl")
 
 

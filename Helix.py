@@ -1,3 +1,4 @@
+
 __author__ = "Kevin Menden"
 __date__ = '01.06.2016'
 
@@ -19,3 +20,6 @@ class Helix(object):
         self.sequence = ""
         for res in helix_residues:
             self.sequence += self.aminoAcidDict[res.get_resname()]
+        self.positions=[]
+        for res in helix_residues:
+            self.positions.append(res.id[1])

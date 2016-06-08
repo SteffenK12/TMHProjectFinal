@@ -74,7 +74,7 @@ def is_transmembrane_helix(helix):
     :param helix: the helix of interest (sequence)
     :return: True or False
     """
-    clf = joblib.load("tmh_predictor.pkl")
+    clf = joblib.load("tmh_predictor_weighted.pkl")
     feats = calculate_features(helix.sequence)
     return clf.predict([feats])
 
