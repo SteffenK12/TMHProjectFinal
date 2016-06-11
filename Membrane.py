@@ -1,5 +1,5 @@
 import numpy as np
-
+import math
 
 class MembranePlacer(object):
     def __init__(self, helices, structure, normal, file):
@@ -57,12 +57,12 @@ class MembranePlacer(object):
         :return: best membrane planes (by shifting up)
         """
         middle = self.computeMiddlePlane()
-        A = middle + 15 * self.normal
-        B = middle - 15 * self.normal
+        A = middle + 12 * self.normal
+        B = middle - 12 * self.normal
         x1, x2, x3, y1, y2, y3, score = 0, 0, 0, 0, 0, 0, 0
         for i in range(0, 15):
-            A = A + self.normal
-            B = B + self.normal
+            A = A + self.normal/5
+            B = B + self.normal/5
             broadened = self.broaden(A, B)
             if broadened[2] > score:
                 score = broadened[2]
@@ -80,8 +80,8 @@ class MembranePlacer(object):
         :return: best membrane planes (by shifting down)
         """
         middle = self.computeMiddlePlane()
-        A = middle + 15 * self.normal
-        B = middle - 15 * self.normal
+        A = middle + 12 * self.normal
+        B = middle - 12 * self.normal
         x1, x2, x3, y1, y2, y3, score = 0, 0, 0, 0, 0, 0, 0
         for i in range(0, 15):
             A = A - self.normal
@@ -106,8 +106,8 @@ class MembranePlacer(object):
         """
         x1, x2, x3, y1, y2, y3, score = 0, 0, 0, 0, 0, 0, 0
         for i in range(10):
-            A = A + self.normal
-            B = B - self.normal
+            A = A + self.normal/5
+            B = B - self.normal/5
             newScore = self.scoring(A, B)
             if newScore > score:
                 score = newScore
@@ -187,7 +187,9 @@ class MembranePlacer(object):
                 continue
         #scoring function:
         #return (hphobcount/((hphilcount+1)))
-        return ((hphobcount) / (hphilcount + 1)) + ((tmhcount) / (notTmhCount + 1)+(helixcount/(loopcount+1)))
+        # return ((hphobcount) / (hphilcount + 1)) + ((tmhcount) / (notTmhCount + 1)+(helixcount/(loopcount+1)))
+        # return ((hphobcount+1) / (hphilcount +1)) + ((tmhcount + helixcount) / (loopcount + notTmhCount + 1))
+        return (hphobcount + tmhcount + helixcount) / (loopcount+1 + hphilcount)
 
     def positiveInsideRule(self, A, B):
         positiveAS = ["ARG", "LYS", "HIS"]

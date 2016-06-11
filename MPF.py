@@ -5,7 +5,7 @@ import argparse
 import sys
 from Helix import Helix
 from matplotlib.colors import colorConverter
-from ModuleMethods import  *
+from ModuleMethods import *
 from Membrane import MembranePlacer
 from mpl_toolkits.mplot3d import axes3d
 
@@ -27,7 +27,7 @@ as two planes: one for each ende of the membrane
 if __name__== "__main__":
     # parser = argparse.ArgumentParser(description="Membrane Plane Finder")
     # parser.add_argument('pdb')
-    file="test/5dsg.pdb"
+    file="test/7prc.pdb"
     pdbParser = PDBHelixParser(file)
     pdbParser.parse_pdb_file()
     structure = pdbParser.structure         # The whole structure of the PDB file
@@ -66,6 +66,15 @@ if __name__== "__main__":
     lower_membrane = membranes[0]
     upper_membrane = membranes[1]
 
+    null_point = np.array([0, 0, 0])
+    # Calculate membrane thickness
+    d11 = -lower_membrane.dot(normal)
+    thickness = ((normal.dot(upper_membrane) - normal.dot(lower_membrane))) / 1
+    print("Thicknes of membrane: " + str(thickness) + " A")
+    print(lower_membrane)
+    print(upper_membrane)
+
+
     fig = plt.figure()
     ax = fig.gca(projection='3d')
     for tmh in tmh_set:
@@ -87,9 +96,9 @@ if __name__== "__main__":
     ax.set_zlim(-100, 100)
 
     # Include atoms (bad performance)
-    for res in structure.get_residues():
-        if res.has_id('N'):
-            coord = res['N'].get_coord()
-            ax.scatter(coord[0], coord[1], coord[2], color="black")
+    # for res in structure.get_residues():
+    #     if res.has_id('N'):
+    #         coord = res['N'].get_coord()
+    #         ax.scatter(coord[0], coord[1], coord[2], color="black")
 
     plt.show()
