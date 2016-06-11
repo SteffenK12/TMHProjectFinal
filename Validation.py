@@ -23,7 +23,8 @@ def isTransmembraneProtein(file):
     # Convert raw helices into Helix objects
     helix_set = []
     for h in raw_helices:
-        helix_set.append(Helix(h))
+        if len(h) > 0:
+            helix_set.append(Helix(h))
     print("Found " + str(len(helix_set)))
     # Predict transmembrane helices
     tmh_set = []
@@ -47,7 +48,7 @@ if __name__ == "__main__":
     tm = 0
     glob = 0
     test = []
-    directory = "validation_set_glob"
+    directory = "validation_set_glob2"
     for subdir, dirs, files in os.walk(directory):
         for file in files:
             if file.endswith(".pdb"):
@@ -79,3 +80,7 @@ if __name__ == "__main__":
     print("Specificity: " + str(specificity))
     accuray = (tp + tn) / (tp + tn + fp + fn)
     print("Accuracy: " + str(accuray))
+    print("TP :" + str(tp))
+    print("TN :" + str(tn))
+    print("FP :" + str(fp))
+    print("FN :" + str(fn))

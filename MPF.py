@@ -27,7 +27,7 @@ as two planes: one for each ende of the membrane
 if __name__== "__main__":
     # parser = argparse.ArgumentParser(description="Membrane Plane Finder")
     # parser.add_argument('pdb')
-    file="test/1bm1.pdb"
+    file="test/5dsg.pdb"
     pdbParser = PDBHelixParser(file)
     pdbParser.parse_pdb_file()
     structure = pdbParser.structure         # The whole structure of the PDB file
@@ -71,6 +71,7 @@ if __name__== "__main__":
     for tmh in tmh_set:
         add_quiver(ax, tmh)
 
+    # 3D presentation of helix vectors and membrane planes
     ax.quiver(lower_membrane[0], lower_membrane[1], lower_membrane[2], normal[0], normal[1], normal[2],
               colors=colorConverter.to_rgb('g'), lw=8, length=50, pivot='tail')
     d1 = -lower_membrane.dot(normal)
@@ -86,9 +87,9 @@ if __name__== "__main__":
     ax.set_zlim(-100, 100)
 
     # Include atoms (bad performance)
-    # for res in structure.get_residues():
-    #     if res.has_id('N'):
-    #         coord = res['N'].get_coord()
-    #         ax.scatter(coord[0], coord[1], coord[2], color="yellow")
+    for res in structure.get_residues():
+        if res.has_id('N'):
+            coord = res['N'].get_coord()
+            ax.scatter(coord[0], coord[1], coord[2], color="black")
 
     plt.show()

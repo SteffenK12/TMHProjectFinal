@@ -40,7 +40,7 @@ def add_quiver(ax, helix):
     dist = end - start
     length = math.sqrt(dist[0]**2 + dist[1]**2 + dist[2]**2)
     ax.quiver(start[0], start[1], start[2], vec[0], vec[1], vec[2], length=length, arrow_length_ratio=0.1, pivot='tail',
-              cmap='Accent', lw=3)
+              color="red", lw=3)
 
 def calculate_hydrophobicity(seq):
     """

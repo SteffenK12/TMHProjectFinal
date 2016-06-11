@@ -223,5 +223,4 @@ class MembranePlacer(object):
     def placeMembrane(self):
         self.helicalPositions()
         result = self.findMembrane()
-        print(np.sqrt(result[0].dot(result[1])))
         return result
